@@ -1,11 +1,9 @@
+import postRepository from "../repository/post.repository.js";
+
 class PostService {
+
     async createPost(author, data) {
-     //todo  add post. body: {
-        // 	"title": "JavaEE",
-        // 	"content": "Java is the best for backend",
-        // 	"tags":["Java", "Spring", "backend", "JEE"]
-        // }
-        throw new Error('Not implemented')
+        return await postRepository.createPost({...data, author});
     }
 
     async getPostById(id) {
