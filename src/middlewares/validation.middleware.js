@@ -1,0 +1,35 @@
+import Joi from 'joi';
+
+const schemas = {
+    createPost: Joi.object({
+        title: Joi.string().required(),
+        content: Joi.string().required(),
+        tags: Joi.array().items(Joi.string())
+
+    }),
+
+    getPostById: Joi.object({
+        postId: Joi.string().required()
+    })
+}
+
+const validate = (schemaName) => (req, res, next) => { // это ф-ция, кот-я принимает название какой-то схемы и
+    //
+    const schema = schemas[schemaName];
+    if (!schema) {
+        return next(new Error(`Schema ${schemaName} not found`));
+    }
+
+    const { error } = schema.validate(req.body);
+    if (error) {
+        return res.status(400).send({
+            message: error.details[0].message,
+            code: 400,
+            status: 'Bad request',
+            path: req.path
+        });
+    }
+    return next();
+}
+
+export default validate;
