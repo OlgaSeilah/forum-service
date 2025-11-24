@@ -7,7 +7,7 @@ const app = express()
 
 app.use(express.json())
 app.use('/forum', postRoutes)
-app.use((error, req, res, next) => {
+app.use((error, req, res, _next) => {
     console.error(`Error: ${error.message}`)
 
     if (error.code === 404) {
