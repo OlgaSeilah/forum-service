@@ -13,8 +13,7 @@ const schemas = {
     })
 }
 
-const validate = (schemaName) => (req, res, next) => { // это ф-ция, кот-я принимает название какой-то схемы и
-    //
+const validate = (schemaName) => (req, res, next) => {
     const schema = schemas[schemaName];
     if (!schema) {
         return next(new Error(`Schema ${schemaName} not found`));

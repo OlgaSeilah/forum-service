@@ -1,4 +1,6 @@
 import postRepository from "../repository/post.repository.js";
+import {CustomError} from "../utils/error.js";
+
 
 class PostService {
 
@@ -7,9 +9,12 @@ class PostService {
     }
 
     async getPostById(id) {
-        //todo add get post by id
-        // return post body
-        throw new Error('Not implemented')
+        const post = await postRepository.getPostById(id);
+        if (post) {
+            return post;
+        }
+
+        throw new CustomError(404);
     }
 
     async addLikeToPost(postId) {
