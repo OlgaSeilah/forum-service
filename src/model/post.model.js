@@ -9,7 +9,14 @@ const postSchema = new mongoose.Schema({
     dateCreated: {type: Date, default: Date.now},
     tags: [String],
     likes: {type: Number, default: 0},
-    comments: []
+    comments: [
+        {
+            user: String,
+            message: String,
+            dateCreated: {type: Date, default: Date.now},
+            likes: {type: Number, default: 0}
+        }
+    ]
     },
     {
         versionKey: false,
