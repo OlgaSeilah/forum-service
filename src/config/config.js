@@ -7,8 +7,9 @@ const config = {
         uri: process.env.MONGO_URI || 'mongodb://mongoadmin:1234localhost:27017/java61?authSource=admin',
         db: {
             dbName: process.env.DB_NAME || 'java61',
-            collectionName: process.env.COLLECTION_NAME || 'posts'
-        }
+        },
+        // collectionName: process.env.COLLECTION_NAME || 'posts'
+
     }
 }
 

@@ -1,17 +1,16 @@
+import postRepository from '../repository/post.repository.js'
+
 class PostService {
     async createPost(author, data) {
-     //todo  add post. body: {
-        // 	"title": "JavaEE",
-        // 	"content": "Java is the best for backend",
-        // 	"tags":["Java", "Spring", "backend", "JEE"]
-        // }
-        throw new Error('Not implemented')
+     return await postRepository.createPost({...data, author})
     }
 
-    async getPostById(id) {
-        //todo add get post by id
-        // return post body
-        throw new Error('Not implemented')
+    async  getPostById(id) {
+        const post = await postRepository.findPostById(id);
+        if (!post) {
+            throw new Error(`Post with id ${id} not found`)
+        }
+        return post;
     }
 
     async addLikeToPost(postId) {
@@ -31,8 +30,11 @@ class PostService {
     }
 
     async deletePostById(postId) {
-        //todo delete post by id
-        throw new Error('Not implemented')
+        const post = await postRepository.deletePost(postId);
+        if (!post) {
+            throw new Error(`Post with id ${postId} not found`)
+        }
+        return post;
     }
 
     async getPostsByTags(tagsString) {
