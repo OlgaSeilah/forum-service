@@ -23,9 +23,13 @@ const PostSchema = new mongoose.Schema({
     {
         versionKey: false,
         toJSON: {
-            transform: (doc, ret) => {
-                ret.id = ret._id;
-                delete ret._id
+            transform: function (doc, ret) {
+                const {_id, ...rest} = ret;
+
+                return {
+                    id: _id,
+                    ...rest
+                }
             }
         }
     })

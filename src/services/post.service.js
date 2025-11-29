@@ -1,6 +1,7 @@
 import postRepository from '../repository/post.repository.js'
 
 class PostService {
+
     async createPost(author, data) {
      return await postRepository.createPost({...data, author})
     }
@@ -14,19 +15,29 @@ class PostService {
     }
 
     async addLikeToPost(postId) {
-        //todo add like to post
-        throw new Error('Not implemented')
+        const success = await postRepository.addLikeToPostByPostId(postId);
+        if (!success) {
+            throw new Error(`Post with id ${postId} not found`)
+        }
+        return success; // todo ?
 
     }
 
     async getPostsByAuthor(author) {
-        //todo add get post by author
-        throw new Error('Not implemented')
+        const post = await postRepository.findPostsByAuthor(author);
+        if (!post) {
+            throw new Error(`Posts for user ${author} not found`)
+        }
+        return post;
     }
 
     async addComment(postId, commenter, comment) {
-        //todo add comment to post
-        throw new Error('Not implemented')
+
+        const post = await postRepository.addComment(postId, commenter, comment);
+        if (!post) {
+            throw new Error(`Post with id ${postId} not found`)
+        }
+        return post;
     }
 
     async deletePostById(postId) {
@@ -38,18 +49,28 @@ class PostService {
     }
 
     async getPostsByTags(tagsString) {
-        //todo add get post by tags
-        throw new Error('Not implemented')
+        const tags = tagsString.split(',');
+        const posts = await postRepository.getPostsByTags(tags);
+        if (!posts) {
+            throw new Error(`Posts for tags ${tags} not found`)
+        }
+        return posts;
     }
 
     async getPostsByPeriod(dateFrom, dateTo) {
-        //todo add get post by period
-        // dateFormat = "YYYY-MM-DD"
-        throw new Error('Not implemented')
+        const posts = await postRepository.getPostsByPeriod(dateFrom, dateTo);
+        if (!posts) {
+            throw new Error(`Posts for period ${dateFrom} - ${dateTo} not found`)
+        }
+        return posts;
     }
 
     async updatePost(postId, data) {
-
+        const post = await postRepository.updatePost(postId, data);
+        if (!post) {
+            throw new Error(`Post with id ${postId} not found`)
+        }
+        return post;
     }
 }
 

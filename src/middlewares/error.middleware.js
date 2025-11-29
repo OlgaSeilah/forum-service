@@ -1,4 +1,4 @@
-const errorMiddleware = (err, req, res, next) => {
+const errorMiddleware = (err, req, res, _next) => {
     console.log(err.stack);
     const contains = err.message.includes('not found');
 
@@ -10,6 +10,7 @@ const errorMiddleware = (err, req, res, next) => {
             path: req.path
         })
     }
+
     return res.status(500).json(
         {
             status: 'Internal server error',

@@ -11,6 +11,64 @@ class PostRepository {
         return Post.findById(id);
     }
 
+    async addLikeToPostByPostId(postId) {
+        return Post.findByIdAndUpdate(postId, {
+            $inc: {
+                likes: 1
+            }
+        }, {}, {});
+    } // todo check this logic
+
+
+    async findPostsByAuthor(authorName) {
+        return Post.find(
+            {author: authorName}
+        )
+    }
+
+    async addComment(postId, commenter, comment) {
+        return Post.findByIdAndUpdate(
+            postId,
+            {
+                $push: {
+                    comments: {
+                        user: commenter,
+                        message: comment,
+                    }
+                }
+            },
+            {new: true}
+        )
+    }
+
+    async getPostsByTags(tags) {
+        return Post.find(
+            {
+                tags: {
+                    $in: tags,
+                }
+            }
+        ).collation({locale: 'en', strength: 2})
+    }
+
+    async updatePost(postId, data) {
+        return Post.findByIdAndUpdate(
+            postId,
+            data,
+        )
+    }
+
+    async getPostsByPeriod(dateFrom, dateTo) {
+        return Post.find(
+            {
+                dateCreated: {
+                    $gte: dateFrom,
+                    $lte: dateTo
+                }
+            }
+        )
+    }
+
     async deletePost(id) {
         return Post.findByIdAndDelete(id);
     }

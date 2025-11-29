@@ -6,7 +6,7 @@ import errorMiddleware from "./middlewares/error.middleware.js";
 
 const app = express()
 
-app.use(express.json()) // указывает на то, для каких роутов применять. тут нет ничего => я всех запросов
+app.use(express.json()) // указывает на то, для каких роутов применять. тут нет ничего => для всех запросов
 
 app.use('/forum', postRoutes) // тут подключаем миддлвар:
                             // "все, что приходит на /forum - перенаправить в файл с роутами для постов
