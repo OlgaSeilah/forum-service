@@ -41,21 +41,41 @@ class PostRepository {
         )
     }
 
-    async getPostsByTags(tags) {
-        return Post.find(
-            {
-                tags: {
-                    $in: tags,
-                }
-            }
-        ).collation({locale: 'en', strength: 2})
+    async updatePost(postId, data) {
+        const updatedPost = {};
+
+        if (data.tags) {
+            updatedPost.$addToSet = {tags: {$each: data.tags}};
+        }
+        if (data.title || data.content) {
+            updatedPost.$set = {
+                title: data.title,
+                content: data.content
+            };
+        }
+
+        return Post.findByIdAndUpdate(
+            postId,
+            updatedPost,
+            {new: true}
+        )
     }
 
-    async updatePost(postId, data) {
-        return Post.findByIdAndUpdate( // todo use $set (add to set) чтобы не допускать уточки памяти из-за дублирующися тэгов
-            postId,
-            data,
-        )
+    async getPostsByTags(tags) {
+        // return Post.find(
+        //     {
+        //         tags: {
+        //             $in: tags,
+        //         }
+        //     }
+        // ).collation({locale: 'en', strength: 2})
+
+        const regexRule = tags.map(tag => ({
+            tags: new RegExp(`^${tag}$`, 'i')
+        }));
+        return Post.find({
+            $or: regexRule
+        })
     }
 
     async getPostsByPeriod(dateFrom, dateTo) {
