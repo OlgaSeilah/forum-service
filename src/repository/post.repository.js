@@ -52,7 +52,7 @@ class PostRepository {
     }
 
     async updatePost(postId, data) {
-        return Post.findByIdAndUpdate(
+        return Post.findByIdAndUpdate( // todo use $set (add to set) чтобы не допускать уточки памяти из-за дублирующися тэгов
             postId,
             data,
         )
