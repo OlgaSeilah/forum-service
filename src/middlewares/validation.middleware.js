@@ -16,20 +16,21 @@ const schemas = {
         title: Joi.string(),
         content: Joi.string(),
         tags: Joi.array().items(Joi.string())
-    })
+    }),
 
-    // getPostById: Joi.object({
-    //     postId: Joi.string().required()
-    // })
+    dateFormat: Joi.object({
+        dateFrom: Joi.date().iso().required(),
+        dateTo: Joi.date().iso().required()
+    })
 }
 
-const validate = (schemaName) => (req, res, next) => {
+const validate = (schemaName, target = 'body') => (req, res, next) => {
     const schema = schemas[schemaName];
     if (!schema) {
         return next(new Error(`Schema ${schemaName} not found`));
     }
 
-    const { error } = schema.validate(req.body);
+    const { error } = schema.validate(req[target]);
     if (error) {
         return res.status(400).send({
             message: error.details[0].message,
