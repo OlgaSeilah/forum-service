@@ -2,6 +2,7 @@ import express from 'express'
 import mongoose from "mongoose";
 import config from './config/config.js'
 import postRoutes  from "./routes/post.routes.js";
+import userRoutes from "./routes/userAccount.routes.js";
 import errorMiddleware from "./middlewares/error.middleware.js";
 
 const app = express()
@@ -12,6 +13,7 @@ app.use('/forum', postRoutes) // тут подключаем миддлвар:
                             // "все, что приходит на /forum - перенаправить в файл с роутами для постов
 // можно использ-ть app.all() - тгда будут обрабатываться все типы запросов
 // в use мы передаем определенный глагол (тип запроса)
+app.use('/account', userRoutes)
 app.use(errorMiddleware)
 
 const connectDB = async () => {
