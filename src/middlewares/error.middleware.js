@@ -11,6 +11,14 @@ const errorMiddleware = (err, req, res, _next) => {
         })
     }
 
+    if (err.message && err.message.includes('duplicate key error')) {
+        return res.status(409).json({
+            status: 'Conflict', // todo seems not secure to return 409 for user
+            code: 409,
+            message: err.message, // todo seems not secure to return the whole message
+        })
+    }
+
     return res.status(500).json(
         {
             status: 'Internal server error',

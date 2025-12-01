@@ -5,7 +5,6 @@ const schemas = {
         title: Joi.string().required(),
         content: Joi.string().required(),
         tags: Joi.array().items(Joi.string())
-
     }),
 
     addComment: Joi.object({
@@ -22,6 +21,8 @@ const schemas = {
         dateFrom: Joi.date().iso().required(),
         dateTo: Joi.date().iso().required()
     })
+
+    // todo add validation for user account creation
 }
 
 const validate = (schemaName, target = 'body') => (req, res, next) => {

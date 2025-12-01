@@ -4,10 +4,54 @@ class UserAccountController {
 
     async register(req, res, next) {
         try {
-            //todo add to middleware validation of email and password
             const newUser = await userAccountService.register(req.body);
             return res.json(newUser);
 
+        } catch (error) {
+            return next(error);
+        }
+    }
+
+    async getUser(req, res, next) {
+        try {
+            const user = await userAccountService.getUser(req.params.login);
+            return res.json(user); //todo only 200 handled. 401 / 404 is not handled
+        } catch (error) {          // if no users in db now -> empty array
+            return next(error);
+        }
+    }
+
+    async updateUser(req, res, next) {
+        try {
+            const user = await userAccountService.updateUser(req.params.login, req.body);
+            return res.json(user);
+        } catch (error) {
+            return next(error);
+        }
+    }
+
+    async addRole(req, res, next) {
+        try {
+            const user = await userAccountService.changeRoles(req.params.login, req.params.role, true);
+            return res.json(user);
+        } catch (error) {
+            return next(error);
+        }
+    }
+
+    async removeRole(req, res, next) {
+        try {
+            const user = await userAccountService.changeRoles(req.params.login, req.params.role, false);
+            return res.json(user);
+        } catch (error) {
+            return next(error);
+        }
+    }
+
+    async deleteUser(req, res, next) {
+        try {
+            const user = await userAccountService.removeUser(req.params.login);
+            return res.json(user);
         } catch (error) {
             return next(error);
         }

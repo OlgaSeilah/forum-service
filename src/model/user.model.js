@@ -1,13 +1,14 @@
 import mongoose, {Types} from 'mongoose';
 
 const userSchema = new mongoose.Schema({
-        _id: {
-            type: String,
-            default: () => new Types.ObjectId().toHexString()
-        },
+        // _id: {
+        //     type: String,
+        //     default: () => new Types.ObjectId().toHexString()
+        // },
         login: {
             type: String,
-            required: true
+            required: true,
+            unique: true
         },
         password: {
             type: String,
@@ -30,11 +31,13 @@ const userSchema = new mongoose.Schema({
         toJSON: {
             transform: function (doc, ret) {
                 delete ret.password;
-                const {_id, ...rest} = ret;
-                return {
-                    id: _id,
-                    ...rest
-                }
+                delete ret._id
+                return ret;
+                // const {_id, ...rest} = ret;
+                // return {
+                //     id: _id,
+                //     ...rest
+                // }
             }
         }
     }
