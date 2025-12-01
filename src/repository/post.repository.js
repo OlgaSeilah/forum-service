@@ -1,4 +1,4 @@
-import Post from '../model/post.model.js';
+import Post from '../model/posts/post.model.js';
 
 class PostRepository {
 
@@ -17,7 +17,7 @@ class PostRepository {
                 likes: 1
             }
         }, {}, {});
-    } // todo check this logic
+    }
 
 
     async findPostsByAuthor(authorName) {

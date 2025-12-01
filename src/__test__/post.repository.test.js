@@ -22,7 +22,7 @@ jest.unstable_mockModule('../model/post.model.js', () => {
     };
 });
 
-const Post = (await import('../model/post.model.js')).default;
+const Post = (await import('../model/posts/post.model.js')).default;
 const postRepository = (await import('../repository/post.repository.js')).default;
 
 describe('PostRepository', () => {
