@@ -20,9 +20,26 @@ const schemas = {
     dateFormat: Joi.object({
         dateFrom: Joi.date().iso().required(),
         dateTo: Joi.date().iso().required()
-    })
+    }),
 
-    // todo add validation for user account creation
+    registerUser: Joi.object({
+        login: Joi.string().required(),
+        password: Joi.string().required(),
+        firstName: Joi.string().required(),
+        lastName: Joi.string().required()
+    }),
+
+    updateUser: Joi.object({
+        firstName: Joi.string(),
+        lastName: Joi.string()
+    }),
+
+    roleManagement: Joi.object({
+        login: Joi.string().required(),
+        role: Joi.string().
+            valid('admin', 'user', 'moderator').required(),
+    }),
+
 }
 
 const validate = (schemaName, target = 'body') => (req, res, next) => {

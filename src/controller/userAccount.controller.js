@@ -15,8 +15,8 @@ class UserAccountController {
     async getUser(req, res, next) {
         try {
             const user = await userAccountService.getUser(req.params.login);
-            return res.json(user); //todo only 200 handled. 401 / 404 is not handled
-        } catch (error) {          // if no users in db now -> empty array
+            return res.json(user);
+        } catch (error) {
             return next(error);
         }
     }
@@ -38,7 +38,7 @@ class UserAccountController {
             return next(error);
         }
     }
-
+// TODO in addRole & removeRole return only login and roles! no names
     async removeRole(req, res, next) {
         try {
             const user = await userAccountService.changeRoles(req.params.login, req.params.role, false);
