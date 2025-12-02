@@ -38,7 +38,7 @@ class UserAccountController {
             return next(error);
         }
     }
-// TODO in addRole & removeRole return only login and roles! no names
+
     async removeRole(req, res, next) {
         try {
             const user = await userAccountService.changeRoles(req.params.login, req.params.role, false);
