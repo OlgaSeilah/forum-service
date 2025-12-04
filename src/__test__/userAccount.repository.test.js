@@ -387,4 +387,92 @@ describe('UserAccountRepository', () => {
             expect(User.findByIdAndDelete).toHaveBeenCalledWith(login);
         });
     });
+
+    describe('changePassword', () => {
+        it('should change user password successfully', async () => {
+            const login = 'testuser';
+            const newPassword = 'newSecurePassword123';
+            const mockUser = {
+                _id: login,
+                password: 'oldPassword123',
+                firstName: 'John',
+                lastName: 'Doe',
+                roles: ['USER'],
+                save: jest.fn()
+            };
+            const mockSavedUser = {
+                _id: login,
+                password: newPassword,
+                firstName: 'John',
+                lastName: 'Doe',
+                roles: ['USER']
+            };
+
+            User.findById.mockResolvedValue(mockUser);
+            mockUser.save.mockResolvedValue(mockSavedUser);
+
+            const result = await userAccountRepository.changePassword(login, newPassword);
+
+            expect(User.findById).toHaveBeenCalledWith(login);
+            expect(mockUser.password).toBe(newPassword);
+            expect(mockUser.save).toHaveBeenCalled();
+            expect(result).toEqual(mockSavedUser);
+        });
+
+        it('should update password property before saving', async () => {
+            const login = 'testuser';
+            const newPassword = 'newPassword456';
+            const mockUser = {
+                _id: login,
+                password: 'oldPassword',
+                save: jest.fn().mockResolvedValue({})
+            };
+
+            User.findById.mockResolvedValue(mockUser);
+
+            await userAccountRepository.changePassword(login, newPassword);
+
+            expect(mockUser.password).toBe(newPassword);
+            expect(mockUser.save).toHaveBeenCalledTimes(1);
+        });
+
+        it('should handle errors when user is not found', async () => {
+            const login = 'nonexistent';
+            const newPassword = 'newPassword123';
+
+            User.findById.mockResolvedValue(null);
+
+            await expect(userAccountRepository.changePassword(login, newPassword)).rejects.toThrow();
+            expect(User.findById).toHaveBeenCalledWith(login);
+        });
+
+        it('should handle errors when finding user fails', async () => {
+            const login = 'testuser';
+            const newPassword = 'newPassword123';
+            const mockError = new Error('Database connection error');
+
+            User.findById.mockRejectedValue(mockError);
+
+            await expect(userAccountRepository.changePassword(login, newPassword)).rejects.toThrow('Database connection error');
+            expect(User.findById).toHaveBeenCalledWith(login);
+        });
+
+        it('should handle errors when saving user fails', async () => {
+            const login = 'testuser';
+            const newPassword = 'newPassword123';
+            const mockUser = {
+                _id: login,
+                password: 'oldPassword',
+                save: jest.fn()
+            };
+            const mockError = new Error('Database save error');
+
+            User.findById.mockResolvedValue(mockUser);
+            mockUser.save.mockRejectedValue(mockError);
+
+            await expect(userAccountRepository.changePassword(login, newPassword)).rejects.toThrow('Database save error');
+            expect(User.findById).toHaveBeenCalledWith(login);
+            expect(mockUser.save).toHaveBeenCalled();
+        });
+    });
 });

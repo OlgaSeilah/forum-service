@@ -7,7 +7,8 @@ jest.unstable_mockModule('../services/userAccount.service.js', () => ({
         getUser: jest.fn(),
         updateUser: jest.fn(),
         changeRoles: jest.fn(),
-        removeUser: jest.fn()
+        removeUser: jest.fn(),
+        changePassword: jest.fn()
     }
 }));
 
@@ -274,6 +275,103 @@ describe('UserAccountController', () => {
             // Assert
             expect(next).toHaveBeenCalledWith(mockError);
             expect(res.json).not.toHaveBeenCalled();
+        });
+    });
+
+    describe('changePassword', () => {
+        it('should change password successfully and return 204 status', async () => {
+            // Arrange
+            const mockPasswordData = {
+                login: 'testUser',
+                newPassword: 'newSecurePassword123'
+            };
+            
+            req.body = mockPasswordData;
+            userAccountService.changePassword.mockResolvedValue(undefined);
+
+            // Act
+            await userAccountController.changePassword(req, res, next);
+
+            // Assert
+            expect(userAccountService.changePassword).toHaveBeenCalledWith(mockPasswordData);
+            expect(res.status).toHaveBeenCalledWith(204);
+            expect(res.end).toHaveBeenCalled();
+            expect(next).not.toHaveBeenCalled();
+        });
+
+        it('should call service with request body', async () => {
+            // Arrange
+            const mockPasswordData = {
+                login: 'anotherUser',
+                newPassword: 'anotherPassword456'
+            };
+            
+            req.body = mockPasswordData;
+            userAccountService.changePassword.mockResolvedValue(undefined);
+
+            // Act
+            await userAccountController.changePassword(req, res, next);
+
+            // Assert
+            expect(userAccountService.changePassword).toHaveBeenCalledWith(mockPasswordData);
+            expect(userAccountService.changePassword).toHaveBeenCalledTimes(1);
+        });
+
+        it('should return 204 with no content', async () => {
+            // Arrange
+            req.body = { login: 'testUser', newPassword: 'newPassword123' };
+            userAccountService.changePassword.mockResolvedValue(undefined);
+
+            // Act
+            await userAccountController.changePassword(req, res, next);
+
+            // Assert
+            expect(res.status).toHaveBeenCalledWith(204);
+            expect(res.end).toHaveBeenCalled();
+            expect(res.json).not.toHaveBeenCalled();
+        });
+
+        it('should call next with error when changePassword fails', async () => {
+            // Arrange
+            const mockError = new Error('Failed to change password');
+            req.body = { login: 'testUser', newPassword: 'newPassword123' };
+            userAccountService.changePassword.mockRejectedValue(mockError);
+
+            // Act
+            await userAccountController.changePassword(req, res, next);
+
+            // Assert
+            expect(next).toHaveBeenCalledWith(mockError);
+            expect(res.status).not.toHaveBeenCalled();
+            expect(res.end).not.toHaveBeenCalled();
+        });
+
+        it('should call next with error when user is not found', async () => {
+            // Arrange
+            const mockError = new Error('User not found');
+            req.body = { login: 'nonExistentUser', newPassword: 'newPassword123' };
+            userAccountService.changePassword.mockRejectedValue(mockError);
+
+            // Act
+            await userAccountController.changePassword(req, res, next);
+
+            // Assert
+            expect(next).toHaveBeenCalledWith(mockError);
+            expect(userAccountService.changePassword).toHaveBeenCalledWith(req.body);
+        });
+
+        it('should call next with error when validation fails', async () => {
+            // Arrange
+            const mockError = new Error('Invalid password format');
+            req.body = { login: 'testUser', newPassword: '123' };
+            userAccountService.changePassword.mockRejectedValue(mockError);
+
+            // Act
+            await userAccountController.changePassword(req, res, next);
+
+            // Assert
+            expect(next).toHaveBeenCalledWith(mockError);
+            expect(res.status).not.toHaveBeenCalled();
         });
     });
 });

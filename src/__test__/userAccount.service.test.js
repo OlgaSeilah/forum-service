@@ -8,7 +8,8 @@ jest.unstable_mockModule('../repository/userAccount.repository.js', () => ({
         updateUserNameOrSurname: jest.fn(),
         addRoleToUser: jest.fn(),
         deleteRoleFromUser: jest.fn(),
-        removeUserByLogin: jest.fn()
+        removeUserByLogin: jest.fn(),
+        changePassword: jest.fn()
     }
 }));
 
@@ -428,6 +429,100 @@ describe('UserAccountService', () => {
                     .rejects.toThrow('Database role deletion error');
                 expect(userAccountRepository.deleteRoleFromUser).toHaveBeenCalledWith(mockLogin, 'ADMIN');
             });
+        });
+    });
+
+    describe('changePassword', () => {
+        it('should change password successfully', async () => {
+            // Arrange
+            const mockLogin = 'testUser';
+            const mockNewPassword = 'newSecurePassword123';
+            const mockUpdatedUser = {
+                _id: mockLogin,
+                login: mockLogin,
+                email: 'test@example.com',
+                password: mockNewPassword,
+                roles: ['USER']
+            };
+
+            userAccountRepository.changePassword.mockResolvedValue(mockUpdatedUser);
+
+            // Act
+            const result = await userAccountService.changePassword(mockLogin, mockNewPassword);
+
+            // Assert
+            expect(userAccountRepository.changePassword).toHaveBeenCalledWith(mockLogin, mockNewPassword);
+            expect(userAccountRepository.changePassword).toHaveBeenCalledTimes(1);
+            expect(result).toEqual(mockUpdatedUser);
+        });
+
+        it('should call repository changePassword with correct parameters', async () => {
+            // Arrange
+            const mockLogin = 'anotherUser';
+            const mockNewPassword = 'anotherPassword456';
+            const mockUpdatedUser = {
+                _id: mockLogin,
+                password: mockNewPassword
+            };
+
+            userAccountRepository.changePassword.mockResolvedValue(mockUpdatedUser);
+
+            // Act
+            await userAccountService.changePassword(mockLogin, mockNewPassword);
+
+            // Assert
+            expect(userAccountRepository.changePassword).toHaveBeenCalledWith(mockLogin, mockNewPassword);
+        });
+
+        it('should propagate error when repository changePassword fails', async () => {
+            // Arrange
+            const mockLogin = 'testUser';
+            const mockNewPassword = 'newPassword123';
+            const mockError = new Error('Database password update error');
+
+            userAccountRepository.changePassword.mockRejectedValue(mockError);
+
+            // Act & Assert
+            await expect(userAccountService.changePassword(mockLogin, mockNewPassword))
+                .rejects.toThrow('Database password update error');
+            expect(userAccountRepository.changePassword).toHaveBeenCalledWith(mockLogin, mockNewPassword);
+        });
+
+        it('should propagate error when user is not found', async () => {
+            // Arrange
+            const mockLogin = 'nonExistentUser';
+            const mockNewPassword = 'newPassword123';
+            const mockError = new Error('User not found');
+
+            userAccountRepository.changePassword.mockRejectedValue(mockError);
+
+            // Act & Assert
+            await expect(userAccountService.changePassword(mockLogin, mockNewPassword))
+                .rejects.toThrow('User not found');
+            expect(userAccountRepository.changePassword).toHaveBeenCalledWith(mockLogin, mockNewPassword);
+        });
+
+        it('should return the result from repository', async () => {
+            // Arrange
+            const mockLogin = 'testUser';
+            const mockNewPassword = 'newPassword999';
+            const mockResult = {
+                _id: mockLogin,
+                login: mockLogin,
+                email: 'user@example.com',
+                name: 'Test',
+                surname: 'User',
+                roles: ['USER']
+            };
+
+            userAccountRepository.changePassword.mockResolvedValue(mockResult);
+
+            // Act
+            const result = await userAccountService.changePassword(mockLogin, mockNewPassword);
+
+            // Assert
+            expect(result).toBe(mockResult);
+            expect(userAccountRepository.changePassword).toHaveBeenCalledWith(mockLogin, mockNewPassword);
         });
     });
 });
