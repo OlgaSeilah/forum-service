@@ -1,14 +1,10 @@
 import mongoose, {Types} from 'mongoose';
 
 const userSchema = new mongoose.Schema({
-        // _id: {
-        //     type: String,
-        //     default: () => new Types.ObjectId().toHexString()
-        // },
-        login: {
+        _id: {
             type: String,
             required: true,
-            unique: true
+            alias: 'login'
         },
         password: {
             type: String,
@@ -24,20 +20,22 @@ const userSchema = new mongoose.Schema({
         },
         roles: {
             type: [String],
+            default: ['USER']
         }
     },
     {
         versionKey: false,
         toJSON: {
             transform: function (doc, ret) {
+                ret.login = ret._id;
                 delete ret.password;
                 delete ret._id
-                return ret;
-                // const {_id, ...rest} = ret;
-                // return {
-                //     id: _id,
-                //     ...rest
-                // }
+
+                const {login, ...rest} = ret;
+                return {
+                    login,
+                    ...rest
+                }
             }
         }
     }

@@ -7,13 +7,11 @@ import errorMiddleware from "./middlewares/error.middleware.js";
 
 const app = express()
 
-app.use(express.json()) // указывает на то, для каких роутов применять. тут нет ничего => для всех запросов
+app.use(express.json())
 
-app.use('/forum', postRoutes) // тут подключаем миддлвар:
-                            // "все, что приходит на /forum - перенаправить в файл с роутами для постов
-// можно использ-ть app.all() - тгда будут обрабатываться все типы запросов
-// в use мы передаем определенный глагол (тип запроса)
+app.use('/forum', postRoutes)
 app.use('/account', userRoutes)
+
 app.use(errorMiddleware)
 
 const connectDB = async () => {

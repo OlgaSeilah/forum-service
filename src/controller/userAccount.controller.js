@@ -5,7 +5,7 @@ class UserAccountController {
     async register(req, res, next) {
         try {
             const newUser = await userAccountService.register(req.body);
-            return res.json(newUser);
+            return res.status(201).json(newUser);
 
         } catch (error) {
             return next(error);

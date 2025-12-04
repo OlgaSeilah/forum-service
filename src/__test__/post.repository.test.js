@@ -1,7 +1,7 @@
 import { jest, describe, it, expect, afterEach } from '@jest/globals';
 
 // Mock the Post model before importing
-jest.unstable_mockModule('../model/post.model.js', () => {
+jest.unstable_mockModule('../model/posts/post.model.js', () => {
     const mockSave = jest.fn();
     const mockFindById = jest.fn();
     const mockFindByIdAndUpdate = jest.fn();
@@ -181,32 +181,30 @@ describe('PostRepository', () => {
                 { _id: '2', title: 'Post 2', tags: ['nodejs'] }
             ];
 
-            const mockCollation = jest.fn().mockResolvedValue(mockPosts);
-            Post.find.mockReturnValue({
-                collation: mockCollation
-            });
+            Post.find.mockResolvedValue(mockPosts);
 
             const result = await postRepository.getPostsByTags(tags);
 
             expect(Post.find).toHaveBeenCalledWith({
-                tags: { $in: tags }
+                $or: [
+                    { tags: /^javascript$/i },
+                    { tags: /^nodejs$/i }
+                ]
             });
-            expect(mockCollation).toHaveBeenCalledWith({ locale: 'en', strength: 2 });
             expect(result).toEqual(mockPosts);
         });
 
         it('should return empty array when no posts match tags', async () => {
             const tags = ['unknown'];
 
-            const mockCollation = jest.fn().mockResolvedValue([]);
-            Post.find.mockReturnValue({
-                collation: mockCollation
-            });
+            Post.find.mockResolvedValue([]);
 
             const result = await postRepository.getPostsByTags(tags);
 
             expect(Post.find).toHaveBeenCalledWith({
-                tags: { $in: tags }
+                $or: [
+                    { tags: /^unknown$/i }
+                ]
             });
             expect(result).toEqual([]);
         });
@@ -228,7 +226,16 @@ describe('PostRepository', () => {
 
             const result = await postRepository.updatePost(postId, updateData);
 
-            expect(Post.findByIdAndUpdate).toHaveBeenCalledWith(postId, updateData);
+            expect(Post.findByIdAndUpdate).toHaveBeenCalledWith(
+                postId,
+                {
+                    $set: {
+                        title: 'Updated Title',
+                        content: 'Updated Content'
+                    }
+                },
+                { new: true }
+            );
             expect(result).toEqual(mockUpdatedPost);
         });
 
@@ -240,7 +247,16 @@ describe('PostRepository', () => {
 
             const result = await postRepository.updatePost(postId, updateData);
 
-            expect(Post.findByIdAndUpdate).toHaveBeenCalledWith(postId, updateData);
+            expect(Post.findByIdAndUpdate).toHaveBeenCalledWith(
+                postId,
+                {
+                    $set: {
+                        title: 'New Title',
+                        content: undefined
+                    }
+                },
+                { new: true }
+            );
             expect(result).toBeNull();
         });
     });
