@@ -9,7 +9,7 @@ router.get('/user/:login', userAccountController.getUser);
 router.post('/register', validate('registerUser'), userAccountController.register);
 router.patch('/user/:login', validate('updateUser'), userAccountController.updateUser);
 router.patch('/user/:login/role/:role', validate('roleManagement', 'params'), userAccountController.addRole);
-// router.patch(''); change password todo after lesson
+router.patch('/password', validate('changePassword'), userAccountController.changePassword);
 router.delete('/user/:login/role/:role', validate('roleManagement', 'params'), userAccountController.removeRole);
 router.delete('/user/:login', userAccountController.deleteUser);
 

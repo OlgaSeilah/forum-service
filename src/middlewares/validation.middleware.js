@@ -37,8 +37,12 @@ const schemas = {
     roleManagement: Joi.object({
         login: Joi.string().required(),
         role: Joi.string().
-            valid('admin', 'user', 'moderator').required(),
+            valid('ADMIN', 'MODERATOR').case('upper').required()
     }),
+
+    changePassword: Joi.object({
+        newPassword: Joi.string().min(4).required()
+    })
 
 }
 

@@ -48,6 +48,15 @@ class UserAccountController {
         }
     }
 
+    async changePassword(req, res, next) {
+        try {
+            await userAccountService.changePassword(req.body); // Here we also can get auth data from headers
+            return res.status(204).end();
+        } catch (error) {
+            return next(error);
+        }
+    }
+
     async deleteUser(req, res, next) {
         try {
             const user = await userAccountService.removeUser(req.params.login);

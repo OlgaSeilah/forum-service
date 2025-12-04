@@ -49,7 +49,8 @@ class UserAccountService {
     }
 
     async changePassword(login, newPassword) {
-        // TODO: DO NOT IMPLEMENT change password
+        return await userAccountRepository.changePassword(login, newPassword);
+        // I'm not sure about returning 404 here (because of checking user existence from header)
     }
 
 

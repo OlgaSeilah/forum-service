@@ -31,6 +31,12 @@ class UserAccountRepository {
         )
     }
 
+    async changePassword(login, newPassword) {
+        const user = await User.findById(login);
+        user.password = newPassword;
+        return user.save();
+    }
+
     async removeUserByLogin(login) {
         return User.findByIdAndDelete(login);
     }
