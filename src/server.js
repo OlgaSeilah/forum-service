@@ -5,6 +5,7 @@ import postRoutes  from "./routes/post.routes.js";
 import userRoutes from "./routes/userAccount.routes.js";
 import errorMiddleware from "./middlewares/error.middleware.js";
 import authenticationMiddleware from "./middlewares/authentication.middleware.js";
+import {initAdmin} from "./config/initAdmin.js";
 
 const app = express()
 
@@ -19,6 +20,7 @@ app.use(errorMiddleware)
 const connectDB = async () => {
     try {
         await mongoose.connect(config.mongoDb.uri, config.mongoDb.db)
+        await initAdmin();
         console.log('MongoDB Connected')
 
     } catch (error) {
