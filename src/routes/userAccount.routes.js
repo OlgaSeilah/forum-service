@@ -5,7 +5,7 @@ import validate from "../middlewares/validation.middleware.js";
 const router = express.Router();
 
 router.get('/user/:login', userAccountController.getUser);
-// router.post('/login') log in //todo after lesson
+router.post('/login', userAccountController.login);
 router.post('/register', validate('registerUser'), userAccountController.register);
 router.patch('/user/:login', validate('updateUser'), userAccountController.updateUser);
 router.patch('/user/:login/role/:role', validate('roleManagement', 'params'), userAccountController.addRole);

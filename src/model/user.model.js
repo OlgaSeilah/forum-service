@@ -1,5 +1,6 @@
-import mongoose, {Types} from 'mongoose';
+import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
+import {USER} from "../config/constants.js";
 
 const userSchema = new mongoose.Schema({
         _id: {
@@ -21,7 +22,7 @@ const userSchema = new mongoose.Schema({
         },
         roles: {
             type: [String],
-            default: ['USER']
+            default: [USER]
         }
     },
     {
@@ -48,5 +49,9 @@ userSchema.pre('save', async function () {
         this.password = await bcrypt.hash(this.password, salt);
     }
 })
+
+userSchema.methods.comparePassword = async function (plainTextPassword) {
+    return await bcrypt.compare(plainTextPassword, this.password);
+}
 
 export default mongoose.model('User', userSchema, 'users');
