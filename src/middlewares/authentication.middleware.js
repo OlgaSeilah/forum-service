@@ -1,7 +1,8 @@
 import User from "../model/user.model.js";
 
 const authenticationMiddleware = async (req, res, next) => {
-    if (!req.path.includes('/register')) {
+    if (!req.path.includes('/register') &&
+        !req.path.includes('/forum/posts') ) {
         const authorizationHeader = req.headers.authorization;
         if (!authorizationHeader || !authorizationHeader.startsWith('Basic ')) {
             return res.status(401).json({message: 'Authorization required'});
@@ -12,7 +13,7 @@ const authenticationMiddleware = async (req, res, next) => {
         const [login, password] = decodedToken.split(':');
         const userData = await User.findById(login);
 
-        if(!userData || !(await userData.comparePassword(password))) { // todo add  !(await userAccount.comparePassword(password))
+        if(!userData || !(await userData.comparePassword(password))) {
             return res.status(401).json({message: 'Invalid credentials'});
         }
 
