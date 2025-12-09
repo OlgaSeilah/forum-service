@@ -12,7 +12,7 @@ class UserAccountController {
         }
     }
 
-    async login(req, res, next) {
+    async login(req, res, _next) {
         const user = await userAccountService.getUser(req.principal.username);
         return res.json(user);
     }
