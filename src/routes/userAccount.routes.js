@@ -30,6 +30,7 @@ router.patch('/user/:login/role/:role',
     userAccountController.addRole);
 
 router.patch('/password',
+    checkIfResourceOwnerMiddleware,
     validate('changePassword'),
     userAccountController.changePassword);
 
