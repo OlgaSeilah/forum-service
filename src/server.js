@@ -1,4 +1,5 @@
 import express from 'express'
+import cors from 'cors';
 import mongoose from "mongoose";
 import config from './config/config.js'
 import postRoutes  from "./routes/post.routes.js";
@@ -8,6 +9,9 @@ import authenticationMiddleware from "./middlewares/authentication.middleware.js
 import {initAdmin} from "./config/initAdmin.js";
 
 const app = express()
+const corsPolicy = cors();
+
+app.use(corsPolicy)
 
 app.use(express.json())
 app.use(authenticationMiddleware)
